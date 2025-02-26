@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -128,3 +129,21 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+# Ignore specific files
+src/store/useFastSpring.js
+src/store/useFastSpringStore.js
+src/composables/useFastSpring.js
+src/components/FastSpringProvider.vue
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore VS Code settings (optional)
+.vscode/
+
+# Ignore package-lock.json (optional)
+package-lock.json
+=======
