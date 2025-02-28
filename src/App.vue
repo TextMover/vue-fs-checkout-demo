@@ -1,17 +1,15 @@
 <template>
   <v-app>
-  <FastSpringProvider>
-    <NavBar />
-    <!-- <toogleMode /> -->
-    <router-view />
-  </FastSpringProvider>
+    <FastSpringProvider>
+      <NavBar />
+      <router-view />
+      <!-- <SettingsPanel /> -->
+    </FastSpringProvider>
   </v-app>
-   
 </template>
 
 <script setup>
-import  FastSpringProvider  from "./components/FastSpringProvider1.vue";
+import FastSpringProvider from "./components/FastSpringProvider1.vue";
 import NavBar from "./components/Navbar.vue";
-// import toogleMode from "./components/toogleMode.vue";
-
+import SettingsPanel from './components/SettingsPanel.vue';
 </script>

@@ -102,6 +102,7 @@ function getNavItems(isLogged) {
     return [
         { text: "Home", to: "/" },
         { text: "About", to: "/about" },
+        { text: "Settings", to: "/settings" },
         isLogged
             ? { text: "Logout", to: "#", action: logout }
             : { text: "Login", to: "/login" }

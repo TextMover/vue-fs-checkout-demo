@@ -80,6 +80,7 @@ const products = computed(() => fastSpringStore.products);
 const selectedProducts = ref([]);
 const crossSale = ref(null);
 const isTestMode = computed(() => fastSpringStore.isTestMode);
+// const setLoadCheckout = ref(true);
 
 watch(
   products,
@@ -168,6 +169,11 @@ const addProduct = (path) => {
 onMounted(() => {
   console.log("Initializing FastSpring Checkout");
 
+  // const reloadCheckout = () => {
+  //    setloadCheckout(false);
+  //    setTimeout(() => setloadCheckout(true), 200);
+  // };
+
   if (window.fastspring) {
     // window.fastspring.builder.reset();
     window.fastspring.builder.checkout();
@@ -178,6 +184,7 @@ onMounted(() => {
     if (orderReference) {
       console.log("OrderReference ID:", orderReference.id);
       window.fastspring.builder.reset();
+      // reloadCheckout();
       setTimeout(() => window.location.reload(), 5000);
     } else {
       console.log("No order ID received.");
