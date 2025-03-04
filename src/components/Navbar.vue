@@ -61,67 +61,74 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
-import logo from '../assets/logo.png';
-import { useAuthStore } from '../store/Auth';
-import { useRouter } from 'vue-router';
-// import { useFastSpring } from '../store/fastSpringContext';
-import { useFastSpringStore } from "../store/useFastSpringStore1"; // Import Pinia store
-import { mdi } from 'vuetify/iconsets/mdi';
+import { ref, watch, computed, inject } from "vue";
+import logo from "../assets/logo.png";
+import { useAuthStore } from "../store/Auth";
+import { useRouter } from "vue-router";
+import { mdi } from "vuetify/iconsets/mdi";
 
 // Router instance
 const router = useRouter();
 const authStore = useAuthStore();
 
-// FastSpring cart data
-// Use the store
-const fastSpringStore = useFastSpringStore();
+// inject FastSpringContext
+const fastSpringContext = inject("FastSpringContext");
 
-// Computed property to get products from the store
-const data = computed(() => fastSpringStore.data);
-const cartTotal = ref("$0.00");
+if (!fastSpringContext) {
+  console.error("FastSpringContext not found. Ensure FastSpringProvider is wrapping this component.");
+}
 
-console.log("Data : ", data);
+//  Destructure injected values
+const { data } = fastSpringContext || { data: ref({}) }; // Default to empty object if not found
 
-// Watch for cart updates
-watch(() => data.originalTotal, (newTotal) => {
+// Correctly define cart total
+const cartTotal = computed(() => {
+  return data?.originalTotal ? `$${data.originalTotal.toFixed(2)}` : "$0.00";
+});
+
+//  Watch for cart updates
+watch(
+  () => data.originalTotal,
+  (newTotal) => {
     cartTotal.value = newTotal ? `$${newTotal.toFixed(2)}` : "$0.00";
-}, { immediate: true });
+  },
+  { immediate: true }
+);
 
 // Logout function
 const logout = () => {
-    authStore.logout();
-    router.push("/");
+  authStore.logout();
+  router.push("/");
 };
 
-// Navigation items
+// Function to dynamically get navigation items
 const navItems = ref(getNavItems(authStore.isLogged));
 
-// Function to dynamically get navigation items
 function getNavItems(isLogged) {
-    return [
-        { text: "Home", to: "/" },
-        { text: "About", to: "/about" },
-        { text: "Settings", to: "/settings" },
-        isLogged
-            ? { text: "Logout", to: "#", action: logout }
-            : { text: "Login", to: "/login" }
-    ];
+  return [
+    { text: "Home", to: "/" },
+    { text: "About", to: "/about" },
+    { text: "Settings", to: "/settings" },
+    isLogged ? { text: "Logout", to: "#", action: logout } : { text: "Login", to: "/login" },
+  ];
 }
 
 // Watch for authentication changes
-watch(() => authStore.isLogged, (newVal) => {
+watch(
+  () => authStore.isLogged,
+  (newVal) => {
     navItems.value = getNavItems(newVal);
-});
+  }
+);
 
 // Handle navigation click
 const handleNavClick = (item, isMobile = false) => {
-    if (item.action) {
-        item.action();
-    }
-    if (isMobile) {
-        drawer.value = false; // Close drawer on mobile
-    }
+  if (item.action) {
+    item.action();
+  }
+  if (isMobile) {
+    drawer.value = false; // Close drawer on mobile
+  }
 };
 
 // Logo source
