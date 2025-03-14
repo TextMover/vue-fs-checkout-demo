@@ -52,56 +52,53 @@
 
 
 <script setup>
-import { ref, onMounted,computed } from "vue";
-import { useFastSpringStore } from "../store/useFastSpringStore1"; // Import Pinia store
+import { ref, onMounted, computed, inject } from "vue";
 
-// Use the store
-const fastSpringStore = useFastSpringStore();
+// Inject FastSpringContext
+const fastSpringContext = inject("FastSpringContext");
 
-// Computed property to get products from the store
-const products = computed(() => fastSpringStore.products);
+if (!fastSpringContext) {
+  console.error("FastSpringContext not found. Ensure FastSpringProvider is wrapping this component.");
+}
+
+// access `products`
+const products = computed(() => fastSpringContext?.products?.value ?? []);
 
 
-// const { products } = useFastSpring();
 const loading = ref(true);
 
-console.log("Product : ",products);
+console.log("Products are :", products.value);
 
-// Simulate a loading delay
+//  Simulate a loading delay
 onMounted(() => {
   setTimeout(() => {
     loading.value = false;
+    console.log("Products after loading:", products.value);
   }, 2000);
-  console.log("Product : ",products);
 });
 
-
+//  Function to reset the FastSpring cart
 const resetCart = () => {
-    // Reset the cart
+  if (window.fastspring?.builder) {
     window.fastspring.builder.reset();
-  };
+  } else {
+    console.error("FastSpring is not loaded.");
+  }
+};
 
-  const buyProduct = (path) => {
-  const newProduct = {
-    path: path,
-    quantity: 1,
-  };
+// Function to add a product to the cart
+const buyProduct = (path) => {
+  const newProduct = { path, quantity: 1 };
+  const payload = { products: [newProduct] };
 
-  const payload = {
-    products: [newProduct],
-  };
-
-  if (window.fastspring && window.fastspring.builder) {
+  if (window.fastspring?.builder) {
     window.fastspring.builder.push(payload);
   } else {
     console.error("FastSpring is not loaded.");
   }
 };
-// Function to handle product purchase (calls FastSpring checkout)
-// const addToCart = (product) => {
-//   window.fastspring.builder.add(product.path, { quantity: 1 });
-// };
 </script>
+
 
 <style scoped>
 .banner {

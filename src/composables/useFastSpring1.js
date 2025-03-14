@@ -1,14 +1,27 @@
 // src/composables/useFastSpring.js
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
-import { useFastSpringStore } from "../store/useFastSpringStore1";
+// import { useFastSpringStore } from "../store/useFastSpringStore1";
 
 export function useFastSpring() {
-  const store = useFastSpringStore();
+  // const store = useFastSpringStore();
+  const products = ref([]);
+  const data = ref({});
+  const isTestMode = ref(true);
+  const storefront = ref("assignmentse.test.onfastspring.com/embedded-test");
   const route = useRoute();
 
   const scriptIdMain = "fsc-api";
   const scriptIdCheckout = "fsc-api-second";
+
+  const toggleStorefront = () => {
+    isTestMode.value = !isTestMode.value;
+    storefront.value = isTestMode.value ? "assignmentse.test.onfastspring.com/embedded-test" : "assignmentse.onfastspring.com/embedded";
+  };
+
+  const setFastSpringData = (fastSpringData) => {
+
+  };
 
   // Function to set opacity to 0 for elements with the same ID
   const setOpacityToZero = () => {
@@ -29,7 +42,7 @@ export function useFastSpring() {
       script.id = id;
       script.src = src;
       Object.keys(attributes).forEach((key) => script.setAttribute(key, attributes[key]));
-      script.dataset.storefront = store.storefront;
+      script.dataset.storefront = storefront.value;
       document.body.appendChild(script);
     }
     return script;
@@ -45,8 +58,8 @@ export function useFastSpring() {
     //   window.fastspring.builder.reset(); // Ensure FastSpring session is reset
     // }
     if (window.fastspring?.builder) {
-    window.fastspring.builder.reset();
-  }
+      window.fastspring.builder.reset();
+    }
     removeScript(scriptIdMain);
     removeScript(scriptIdCheckout);
   };
@@ -96,7 +109,9 @@ export function useFastSpring() {
   onMounted(() => {
     // Set the FastSpring callback before loading scripts
     window.fastSpringCallBack = (fastSpringData) => {
-      store.setFastSpringData(fastSpringData);
+      // store.setFastSpringData(fastSpringData);
+      data.value = fastSpringData;
+      products.value = fastSpringData.groups?.flatMap((group) => group.items) || [];
       console.log("FastSpring Data:", fastSpringData);
     };
 
@@ -105,7 +120,7 @@ export function useFastSpring() {
 
   onUnmounted(cleanupScripts);
 
-  watch(() => store.storefront, () => {
+  watch(() => storefront.value, () => {
     console.log("Storefront changed");
     cleanupScripts();
     loadFastSpringScripts();
@@ -128,5 +143,5 @@ export function useFastSpring() {
   //   loadFastSpringScripts();
   // });
 
-  return { reloadCheckoutScript: loadFastSpringScripts };
+  return {products, data, setFastSpringData, isTestMode, toggleStorefront, storefront, loadFastSpringScripts };
 }

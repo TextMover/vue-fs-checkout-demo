@@ -70,16 +70,16 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted, inject } from "vue";
 // import { useFastSpring } from "../store/fastSpringContext";
-import { useFastSpringStore } from "../store/useFastSpringStore1";
+// import { useFastSpringStore } from "../store/useFastSpringStore1";
 
-const fastSpringStore = useFastSpringStore();
+const fastSpringStore = inject("FastSpringContext");
 
-const products = computed(() => fastSpringStore.products);
+const products = computed(() => fastSpringStore?.products.value) ?? [];
 const selectedProducts = ref([]);
 const crossSale = ref(null);
-const isTestMode = computed(() => fastSpringStore.isTestMode);
+const isTestMode = computed(() => fastSpringStore?.isTestMode.value) ?? false;
 // const setLoadCheckout = ref(true);
 
 watch(
