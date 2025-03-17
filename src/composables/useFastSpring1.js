@@ -1,10 +1,8 @@
 // src/composables/useFastSpring.js
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
-// import { useFastSpringStore } from "../store/useFastSpringStore1";
 
 export function useFastSpring() {
-  // const store = useFastSpringStore();
   const products = ref([]);
   const data = ref({});
   const isTestMode = ref(true);
@@ -16,7 +14,8 @@ export function useFastSpring() {
 
   const toggleStorefront = () => {
     isTestMode.value = !isTestMode.value;
-    storefront.value = isTestMode.value ? "assignmentse.test.onfastspring.com/embedded-test" : "assignmentse.onfastspring.com/embedded";
+    storefront.value = isTestMode.value ? "assignmentse.test.onfastspring.com/embedded-test" : localStorage.getItem("storefront") || "assignmentse.test.onfastspring.com/embedded-test";
+    console.log(" changed Storefront:", storefront.value);
   };
 
   const setFastSpringData = (fastSpringData) => {
@@ -109,7 +108,6 @@ export function useFastSpring() {
   onMounted(() => {
     // Set the FastSpring callback before loading scripts
     window.fastSpringCallBack = (fastSpringData) => {
-      // store.setFastSpringData(fastSpringData);
       data.value = fastSpringData;
       products.value = fastSpringData.groups?.flatMap((group) => group.items) || [];
       console.log("FastSpring Data:", fastSpringData);
@@ -122,8 +120,9 @@ export function useFastSpring() {
 
   watch(() => storefront.value, () => {
     console.log("Storefront changed");
-    cleanupScripts();
-    loadFastSpringScripts();
+    // cleanupScripts();
+    // loadFastSpringScripts();
+    
   });
 
   // Watch for changes in route path (to load checkout script if needed)

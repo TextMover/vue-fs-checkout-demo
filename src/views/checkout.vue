@@ -5,9 +5,13 @@
         <!-- switch to live mode -->
         <!-- Toggle Switch -->
         <label class="switch">
-          <input type="checkbox" :checked="isTestMode" @change="switchStorefront">
-          <span class="slider"></span>
+          <input type="checkbox" v-model="isTestMode" @change="switchStorefront" />
+          <span class="slider round"></span>
         </label>
+        <span style="margin: 0 11px">
+          : {{ isTestMode ? "Test Mode" : "Real Mode" }}</span
+        >
+      
       </v-col>
       <v-col cols="12" md="6">
         <v-card class="pa-5" elevation="3">
@@ -24,7 +28,7 @@
               <v-list-item-title class="text-body-1 font-weight-medium">
                 {{ product.display }}
               </v-list-item-title>
-              <v-list-item-subtitle class="text-caption">Price: {{ product.price }}</v-list-item-subtitle>
+              <v-list-item-subtitle class="text-caption">Price: {{ product.price }},  Quantity: {{ product.quantity }}</v-list-item-subtitle>
               <template v-slot:append>
                 <v-btn icon color="red" @click.prevent="removeProduct(product.path)">
                   <v-icon>mdi-delete</v-icon>
@@ -207,5 +211,71 @@ onUnmounted(() => {
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Mode Text Styling */
+.mode-text {
+  font-size: 20px;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #333;
 }
 </style>

@@ -45,13 +45,13 @@
 export default {
   data() {
     return {
-      storefrontId: localStorage.getItem('storefrontId') || '',
+      storefrontId: localStorage.getItem('storefront') || '',
       productCatalogPath: localStorage.getItem('productCatalogPath') || ''
     };
   },
   methods: {
     saveSettings() {
-      localStorage.setItem('storefrontId', this.storefrontId);
+      localStorage.setItem('storefront', this.storefrontId);
       localStorage.setItem('productCatalogPath', this.productCatalogPath);
       console.log('storefrontId: ', this.storefrontId);
       console.log('productCatalogPath: ', this.productCatalogPath);
